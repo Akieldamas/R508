@@ -1,0 +1,54 @@
+﻿@page "/addproduct"
+@inject ProduitsTableViewModel produitsTableViewModel
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<PageTitle>Add Product</PageTitle>
+
+<h1>Ajouter un nouveau prouit!</h1>
+
+<EditForm Model="newProduit" OnValidSubmit="HandleAddProduct">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="productName">Product Name</label>
+        <input id="productName" class="form-control" @bind="newProduit.NomProduit" placeholder="Enter product name" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" class="form-control" @bind="newProduit.Description" placeholder="Enter description" rows="3"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="photoName">Photo Name</label>
+        <input id="photoName" class="form-control" @bind="newProduit.NomPhoto" placeholder="Enter photo name" />
+    </div>
+
+    <div class="form-group">
+        <label for="photoUri">Photo URI</label>
+        <input id="photoUri" class="form-control" @bind="newProduit.UriPhoto" placeholder="Enter photo URI" />
+    </div>
+
+    <button class="btn btn-primary" type="submit">Add Product</button>
+</EditForm>
+
+
+<Toasts Messages="messages" Placement="ToastsPlacement.TopRight" AutoHide="true" Delay="5000" ShowCloseButton="true" />
+
+@code {
+    private Produit newProduit = new();
+    private List<ToastMessage> messages = new();
+
+    private void ShowMessage(ToastMessage toastMessage) => messages.Add(toastMessage);
+
+    private async Task HandleAddProduct()
+    {
+        if (newProduit is null)
+            return;
+        ToastMessage toast = await produitsTableViewModel.CreateProduit(newProduit);
+        ShowMessage(toast);
+        newProduit = new Produit();
+    }
+}

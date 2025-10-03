@@ -1,0 +1,129 @@
+﻿@page "/produits"
+@inject ProduitsTableViewModel produitsTableViewModel
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Produits</PageTitle>
+
+<h1>Produits</h1>
+
+<p>Voir la liste des produits, ou supprimer si vous voulez aussi...</p>
+
+@* <Modal @bind-Visible="showEditModal" Title="Edit Product">
+    <EditForm Model="produitToEdit" OnValidSubmit="SaveEdit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-2">
+            <label>Nom Produit</label>
+            <InputText class="form-control" @bind-Value="produitToEdit.NomProduit" />
+        </div>
+        <div class="mb-2">
+            <label>Description</label>
+            <InputText class="form-control" @bind-Value="produitToEdit.Description" />
+        </div>
+        <div class="mb-2">
+            <label>Nom Photo</label>
+            <InputText class="form-control" @bind-Value="produitToEdit.NomPhoto" />
+        </div>
+        <div class="mb-2">
+            <label>Uri Photo</label>
+            <InputText class="form-control" @bind-Value="produitToEdit.UriPhoto" />
+        </div>
+
+        <div class="d-flex justify-content-end mt-3">
+            <button type="button" class="btn btn-secondary me-2" @onclick="CancelEdit">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </EditForm>
+</Modal>
+ *@
+@if (produitsTableViewModel.Produits == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!produitsTableViewModel.Produits.Any())
+{
+    <p><em>No products found.</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom Produit</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produit in produitsTableViewModel.Produits)
+            {
+                <tr>
+                    <td>@produit.NomProduit</td>
+                    <td>@produit.Description</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger me-2" @onclick="() => ConfirmDelete(produit)">X</button>
+@*                         <button class="btn btn-sm btn-warning" @onclick="() => OpenEditModal(produit)">Edit</button>
+ *@                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Toasts Messages="messages" Placement="ToastsPlacement.TopRight" AutoHide="true" Delay="5000" ShowCloseButton="true"/>
+
+@code {
+    List<ToastMessage> messages = new();
+    
+    // private bool showEditModal = false;
+    // private Produit produitToEdit;
+
+    private void ShowMessage(ToastMessage toastMessage) => messages.Add(toastMessage);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var toastMessage = await produitsTableViewModel.LoadData();
+        ShowMessage(toastMessage);
+    }
+
+    // --- DELETE ---
+    private async Task ConfirmDelete(Produit produit)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{produit.NomProduit}'?");
+        if (confirmed)
+        {
+            var toast = await produitsTableViewModel.DeleteProduit(produit);
+            ShowMessage(toast);
+        }
+    }
+
+    // private void OpenEditModal(Produit produit)
+    // {
+    //     produitToEdit = new Produit
+    //     {
+    //         IdProduit = produit.IdProduit,
+    //         NomProduit = produit.NomProduit,
+    //         Description = produit.Description,
+    //         NomPhoto = produit.NomPhoto,
+    //         UriPhoto = produit.UriPhoto
+    //     };
+    //     showEditModal = true;
+    // }
+
+    // private async Task SaveEdit()
+    // {
+    //     if (produitToEdit != null)
+    //     {
+    //         var toast = await produitsTableViewModel.UpdateProduit(produitToEdit);
+    //         ShowMessage(toast);
+    //         showEditModal = false;
+    //     }
+    // }
+
+    // private void CancelEdit()
+    // {
+    //     showEditModal = false;
+    //     produitToEdit = null;
+    // }
+}

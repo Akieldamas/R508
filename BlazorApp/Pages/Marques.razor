@@ -1,0 +1,66 @@
+﻿@page "/marques"
+@inject MarqueViewModel marqueViewModel
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Marques</PageTitle>
+
+<h1>Marques</h1>
+
+<p>Voir les marques, supprimer aussi!</p>
+
+@if (marqueViewModel.Marques == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!marqueViewModel.Marques.Any())
+{
+    <p><em>No products found.</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom Marques</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var marque in marqueViewModel.Marques)
+            {
+                <tr>
+                    <td>@marque.IdMarque</td>
+                    <td>@marque.NomMarque</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger me-2" @onclick="() => ConfirmDelete(marque)">X</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Toasts Messages="messages" Placement="ToastsPlacement.TopRight" AutoHide="true" Delay="5000" ShowCloseButton="true"/>
+
+@code {
+    List<ToastMessage> messages = new();
+
+    private void ShowMessage(ToastMessage toastMessage) => messages.Add(toastMessage);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var toastMessage = await marqueViewModel.LoadData();
+        ShowMessage(toastMessage);
+    }
+
+    private async Task ConfirmDelete(Marque marque)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{marque.NomMarque}'?");
+        if (confirmed)
+        {
+            var toast = await marqueViewModel.DeleteProduit(marque);
+            ShowMessage(toast);
+        }
+    }
+}

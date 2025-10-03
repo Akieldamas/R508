@@ -1,0 +1,67 @@
+﻿@page "/typeproduits"
+@inject TypeProduitViewModel typeProduitViewModel
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Type Produits</PageTitle>
+
+<h1>Type Produits</h1>
+
+<p>Voir les types de produits, supprimer aussi!</p>
+
+@if (typeProduitViewModel.TypeProduits == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!typeProduitViewModel.TypeProduits.Any())
+{
+    <p><em>No products found.</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var typeProduit in typeProduitViewModel.TypeProduits)
+            {
+                <tr>
+                    <td>@typeProduit.IdTypeProduit</td>
+                    <td>@typeProduit.NomTypeProduit</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger me-2" @onclick="() => ConfirmDelete(typeProduit)">X</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<Toasts Messages="messages" Placement="ToastsPlacement.TopRight" AutoHide="true" Delay="5000" ShowCloseButton="true" />
+
+@code {
+    List<ToastMessage> messages = new();
+
+    private void ShowMessage(ToastMessage toastMessage) => messages.Add(toastMessage);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var toastMessage = await typeProduitViewModel.LoadData();
+        ShowMessage(toastMessage);
+    }
+
+    private async Task ConfirmDelete(TypeProduit typeProduit)
+    {
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{typeProduit.NomTypeProduit}'?");
+        if (confirmed)
+        {
+            var toast = await typeProduitViewModel.DeleteProduit(typeProduit);
+            ShowMessage(toast);
+        }
+    }
+}
+
