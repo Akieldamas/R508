@@ -37,6 +37,9 @@ public class Product
     
     [Column("stock_max")]
     public int StockMax { get; set; }
+    
+    [Column("status")]
+    public bool Status { get; set; }
 
     [ForeignKey(nameof(IdBrand))]
     [InverseProperty(nameof(Brand.Products))]
