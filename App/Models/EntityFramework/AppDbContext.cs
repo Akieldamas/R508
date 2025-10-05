@@ -6,9 +6,9 @@ namespace App.Models.EntityFramework;
 
 public partial class AppDbContext : DbContext
 {
-    public DbSet<Produit> Produits { get; set; }
-    public DbSet<Marque> Marques { get; set; }
-    public DbSet<TypeProduit> TypeProduits { get; set; }
+    public DbSet<Product> Products { get; set; }
+    public DbSet<Brand> Brands { get; set; }
+    public DbSet<ProductType> ProductTypes { get; set; }
 
     public AppDbContext()
     {
@@ -21,39 +21,39 @@ public partial class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Server=localhost;port=5432;Database=R508; uid=postgres; password=postgres;");
+        => optionsBuilder.UseNpgsql("Server=localhost;port=5432;Database=R508;uid=postgres;password=postgres;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Produit>(e =>
+        modelBuilder.Entity<Product>(e =>
         {
-            e.HasKey(p => p.IdProduit);
+            e.HasKey(p => p.IdProduct);
             
-            e.HasOne(p => p.MarqueNavigation)
-                .WithMany(m => m.Produits)
+            e.HasOne(p => p.BrandNavigation)
+                .WithMany(m => m.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_produits_marque");
+                .HasConstraintName("FK_products_brand");
             
-            e.HasOne(p => p.TypeProduitNavigation)
-                .WithMany(m => m.Produits)
+            e.HasOne(p => p.ProductTypeNavigation)
+                .WithMany(m => m.Products)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_produits_type_produit");
+                .HasConstraintName("FK_products_product_type");
         });
-        modelBuilder.Entity<TypeProduit>(e =>
+        modelBuilder.Entity<ProductType>(e =>
         {
-            e.HasKey(p => p.IdTypeProduit);
+            e.HasKey(p => p.IdProductType);
 
-            e.HasMany(p => p.Produits)
-                .WithOne(m => m.TypeProduitNavigation)
+            e.HasMany(p => p.Products)
+                .WithOne(m => m.ProductTypeNavigation)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
         
-        modelBuilder.Entity<Marque>(e =>
+        modelBuilder.Entity<Brand>(e =>
         {
-            e.HasKey(p => p.IdMarque);
+            e.HasKey(p => p.IdBrand);
 
-            e.HasMany(p => p.Produits)
-                .WithOne(m => m.MarqueNavigation)
+            e.HasMany(p => p.Products)
+                .WithOne(m => m.BrandNavigation)
                 .OnDelete(DeleteBehavior.ClientSetNull);
         });
         

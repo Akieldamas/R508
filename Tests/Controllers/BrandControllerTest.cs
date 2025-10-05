@@ -17,20 +17,20 @@ using System.Linq;
 namespace Tests.Controllers;
 
 [TestClass]
-[TestSubject(typeof(MarqueController))]
+[TestSubject(typeof(BrandController))]
 [TestCategory("integration")]
-public class MarqueControllerTest
+public class BrandControllerTest
 {
     private readonly AppDbContext _context;
-    private readonly MarqueController _marqueController;
+    private readonly BrandController _brandController;
     private readonly IMapper _mapper;
-    private int _marqueId; // Accessible partout dans la classe
+    private int _brandId; // Accessible partout dans la classe
 
-    public MarqueControllerTest()
+    public BrandControllerTest()
     {
         // Création du contexte de la DB et du manager
         _context = new AppDbContext(); 
-        MarqueManager manager = new(_context);
+        BrandManager manager = new(_context);
 
         // Configuration d'AutoMapper
         var config = new MapperConfiguration(cfg => {
@@ -40,63 +40,63 @@ public class MarqueControllerTest
         _mapper = config.CreateMapper();
 
         // Création du controller à tester
-        _marqueController = new MarqueController(_mapper, manager);
+        _brandController = new BrandController(_mapper, manager);
     }
 
     [TestMethod]
-    public void ShouldGetMarque()
+    public void ShouldGetBrand()
     {
         // Given : Une Marque en DB
-        Marque marqueInDb = new()
+        Brand brandInDb = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
-        _context.Marques.Add(marqueInDb);
+        _context.Brands.Add(brandInDb);
         _context.SaveChanges();
 
         // When : On appelle la méthode GET de l'API pour récupérer le produit
-        ActionResult<MarqueDto> action = _marqueController.Get(marqueInDb.IdMarque).GetAwaiter().GetResult();
+        ActionResult<BrandDTO> action = _brandController.Get(brandInDb.IdBrand).GetAwaiter().GetResult();
 
         // Then : On récupère le produit et le code de retour est 200
         Assert.IsNotNull(action);
-        Assert.IsInstanceOfType(action.Value, typeof(MarqueDto));
-        Assert.AreEqual(_mapper.Map<MarqueDto>(marqueInDb), action.Value);
+        Assert.IsInstanceOfType(action.Value, typeof(BrandDTO));
+        Assert.AreEqual(_mapper.Map<BrandDTO>(brandInDb), action.Value);
     }
 
     [TestMethod]
-    public void ShouldDeleteMarque()
+    public void ShouldDeleteBrand()
     {
         // Given : Une Marque en DB
-        Marque marqueInDb = new()
+        Brand brandInDb = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
-        _context.Marques.Add(marqueInDb);
+        _context.Brands.Add(brandInDb);
         _context.SaveChanges();
 
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _marqueController.Delete(marqueInDb.IdMarque).GetAwaiter().GetResult();
+        IActionResult action = _brandController.Delete(brandInDb.IdBrand).GetAwaiter().GetResult();
 
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
-        Assert.IsNull(_context.Marques.Find(marqueInDb.IdMarque));
+        Assert.IsNull(_context.Brands.Find(brandInDb.IdBrand));
     }
 
     [TestMethod]
-    public void ShouldNotDeleteMarqueBecauseMarqueDoesNotExist()
+    public void ShouldNotDeleteBranddBecauseBrandDoesNotExist()
     {
 
         // Given : Une Marque en DB
-        Marque marqueInDb = new()
+        Brand brandInDb = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _marqueController.Delete(marqueInDb.IdMarque).GetAwaiter().GetResult();
+        IActionResult action = _brandController.Delete(brandInDb.IdBrand).GetAwaiter().GetResult();
 
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
@@ -131,10 +131,10 @@ public class MarqueControllerTest
     //} (Ne marche pas, problème de mapping avec AutoMapper, à revoir plus tard)
 
     [TestMethod]
-    public void GetMarqueShouldReturnNotFound()
+    public void GetBrandShouldReturnNotFound()
     {
         // When : On appelle la méthode get de mon api pour récupérer le produit
-        ActionResult<MarqueDto> action = _marqueController.Get(0).GetAwaiter().GetResult();
+        ActionResult<BrandDTO> action = _brandController.Get(0).GetAwaiter().GetResult();
 
         // Then : On ne renvoie rien et on renvoie NOT_FOUND (404)
         Assert.IsInstanceOfType(action.Result, typeof(NotFoundResult), "Ne renvoie pas 404");
@@ -155,7 +155,7 @@ public class MarqueControllerTest
     //    _context.SaveChanges();
 
     //    // Then : Le produit est bien enregistré et le code renvoyé et CREATED (201)
-    //    Marque marqueInDb = _context.Marques.Find(action.Value.IdMarque);
+    //    Marque marqueInDb = _context.Marques.Find(action.Value.IdBrand);
     //    Marque marque_from_controller = action.Value;
 
     //    Assert.IsNotNull(marqueInDb);
@@ -165,49 +165,49 @@ public class MarqueControllerTest
     //} (Ne marche pas, problème de mapping avec AutoMapper, à revoir plus tard)
 
     [TestMethod]
-    public void ShouldUpdateMarque()
+    public void ShouldUpdateBrand()
     {
         // Given : Une marque à mettre à jour
-        Marque marqueToEdit = new()
+        Brand brandToEdit = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
-        _context.Marques.Add(marqueToEdit);
+        _context.Brands.Add(brandToEdit);
         _context.SaveChanges();
 
         // Une fois enregistré, on modifie certaines propriétés 
-        marqueToEdit.NomMarque = "Carnival";
+        brandToEdit.NameBrand = "Carnival";
 
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit
-        IActionResult action = _marqueController.Update(marqueToEdit.IdMarque, marqueToEdit).GetAwaiter().GetResult();
+        IActionResult action = _brandController.Update(brandToEdit.IdBrand, brandToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que le produit a bien été modifié et que le code renvoyé et NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
 
-        Marque editedmarqueInDb = _context.Marques.Find(marqueToEdit.IdMarque);
+        Brand editedbrandInDb = _context.Brands.Find(brandToEdit.IdBrand);
 
-        Assert.IsNotNull(editedmarqueInDb);
-        Assert.AreEqual(marqueToEdit, editedmarqueInDb);
+        Assert.IsNotNull(editedbrandInDb);
+        Assert.AreEqual(brandToEdit, editedbrandInDb);
     }
 
     [TestMethod]
-    public void ShouldNotUpdateMarqueBecauseIdInUrlIsDifferent()
+    public void ShouldNotUpdateBrandBecauseIdInUrlIsDifferent()
     {
         // Given : Une marque à mettre à jour
-        Marque marqueToEdit = new()
+        Brand brandToEdit = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
-        _context.Marques.Add(marqueToEdit);
+        _context.Brands.Add(brandToEdit);
         _context.SaveChanges();
 
-        marqueToEdit.NomMarque = "Auchan";
+        brandToEdit.NameBrand = "Auchan";
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit,
         // mais en précisant un ID différent de celui du produit enregistré
-        IActionResult action = _marqueController.Update(0, marqueToEdit).GetAwaiter().GetResult();
+        IActionResult action = _brandController.Update(0, brandToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que l'API renvoie un code BAD_REQUEST (400)
         Assert.IsNotNull(action);
@@ -215,17 +215,17 @@ public class MarqueControllerTest
     }
 
     [TestMethod]
-    public void ShouldNotUpdateMarqueBecauseMarqueDoesNotExist()
+    public void ShouldNotUpdateBrandBecauseBrandDoesNotExist()
     {
         // Given : Une marque à mettre à jour
-        Marque marqueToEdit = new()
+        Brand brandToEdit = new()
         {
-            NomMarque = "Ikea"
+            NameBrand = "Ikea"
         };
 
 
         // When : On appelle la méthode PUT du controller pour mettre à jour un produit qui n'est pas enregistré
-        IActionResult action = _marqueController.Update(marqueToEdit.IdMarque, marqueToEdit).GetAwaiter().GetResult();
+        IActionResult action = _brandController.Update(brandToEdit.IdBrand, brandToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que l'API renvoie un code NOT_FOUND (404)
         Assert.IsNotNull(action);
@@ -235,21 +235,21 @@ public class MarqueControllerTest
     [TestCleanup]
     public void Cleanup()
     {
-        var produits = _context.Produits.Where(p => p.IdMarque == _marqueId).ToList();
-        if (produits.Any())
+        var brands = _context.Brands.Where(p => p.IdBrand == _brandId).ToList();
+        if (brands.Any())
         {
-            _context.Produits.RemoveRange(produits);
+            _context.Brands.RemoveRange(brands);
             _context.SaveChanges();
         }
 
 
-        _context.Produits.RemoveRange(produits);
+        _context.Brands.RemoveRange(brands);
         _context.SaveChanges();
 
-        var marque = _context.Marques.Find(_marqueId);
-        if (marque != null)
+        var brand = _context.Brands.Find(_brandId);
+        if (brand != null)
         {
-            _context.Marques.Remove(marque);
+            _context.Brands.Remove(brand);
             _context.SaveChanges();
         }
     }

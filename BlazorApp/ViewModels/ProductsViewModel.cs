@@ -4,13 +4,13 @@ using BlazorBootstrap;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-public class ProduitsTableViewModel
+public class ProductsViewModel
 {
     private readonly ProductService _service;
     private readonly ToastNotifications _toastNotifications;
 
-    public IEnumerable<Produit> Produits { get; set; } = null;
-    public ProduitsTableViewModel(ProductService service, ToastNotifications toastNotifications)
+    public IEnumerable<Product> Products { get; set; } = null;
+    public ProductsViewModel(ProductService service, ToastNotifications toastNotifications)
     {
         _service = service;
         _toastNotifications = toastNotifications;
@@ -18,22 +18,22 @@ public class ProduitsTableViewModel
 
     public async Task<ToastMessage> LoadData()
     {
-        List<Produit> produits = await _service.GetAllAsync();
+        List<Product> products = await _service.GetAllAsync();
 
-        if (produits != null && produits.Any())
+        if (products != null && products.Any())
         {
-            Produits = produits.ToList();
+            Products = products.ToList();
             return _toastNotifications.Create("Products loaded successfully", ToastType.Success, "Success!");
         }
 
         return _toastNotifications.Create("Products not found", ToastType.Warning, "Failed!");
     }
 
-    public async Task<ToastMessage> CreateProduit(Produit produit)
+    public async Task<ToastMessage> CreateProduit(Product product)
     {
         try
         {
-            await _service.AddAsync(produit); // calls your API
+            await _service.AddAsync(product); // calls your API
             return _toastNotifications.Create("Product added successfully!", ToastType.Success, "Success!");
         }
         catch (Exception ex)
@@ -42,18 +42,18 @@ public class ProduitsTableViewModel
         }
     }
 
-    public async Task<ToastMessage> DeleteProduit(Produit produit)
+    public async Task<ToastMessage> DeleteProduit(Product product)
     {
-        await _service.DeleteAsync(produit.IdProduit);
+        await _service.DeleteAsync(product.IdProduct);
         await LoadData();
-        return _toastNotifications.Create($"Deleted {produit.NomProduit}", ToastType.Danger, "Deleted");
+        return _toastNotifications.Create($"Deleted {product.NameProduct}", ToastType.Danger, "Deleted");
     }
 
-    public async Task<ToastMessage> UpdateProduit(Produit produit)
+    public async Task<ToastMessage> UpdateProduit(Product product)
     {
-        await _service.UpdateAsync(produit);
+        await _service.UpdateAsync(product);
         await LoadData();
-        return _toastNotifications.Create($"Updated {produit.NomProduit}", ToastType.Success, "Updated");
+        return _toastNotifications.Create($"Updated {product.NameProduct}", ToastType.Success, "Updated");
     }
 
 }

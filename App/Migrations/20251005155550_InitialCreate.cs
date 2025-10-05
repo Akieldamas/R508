@@ -15,81 +15,81 @@ namespace App.Migrations
                 name: "marque",
                 columns: table => new
                 {
-                    id_marque = table.Column<int>(type: "integer", nullable: false)
+                    id_brand = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nom_marque = table.Column<string>(type: "text", nullable: false)
+                    name_brand = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_marque", x => x.id_marque);
+                    table.PrimaryKey("PK_marque", x => x.id_brand);
                 });
 
             migrationBuilder.CreateTable(
-                name: "type_produit",
+                name: "product_type",
                 columns: table => new
                 {
-                    id_type_produit = table.Column<int>(type: "integer", nullable: false)
+                    id_product_type = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nom_type_produit = table.Column<string>(type: "text", nullable: false)
+                    name_product_type = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_type_produit", x => x.id_type_produit);
+                    table.PrimaryKey("PK_product_type", x => x.id_product_type);
                 });
 
             migrationBuilder.CreateTable(
-                name: "produit",
+                name: "product",
                 columns: table => new
                 {
-                    id_produit = table.Column<int>(type: "integer", nullable: false)
+                    id_product = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nom_produit = table.Column<string>(type: "text", nullable: false),
+                    name_product = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: false),
-                    nom_photo = table.Column<string>(type: "text", nullable: false),
+                    name_photo = table.Column<string>(type: "text", nullable: false),
                     uri_photo = table.Column<string>(type: "text", nullable: false),
-                    id_type_produit = table.Column<int>(type: "integer", nullable: true),
-                    id_marque = table.Column<int>(type: "integer", nullable: true),
-                    stock_reel = table.Column<int>(type: "integer", nullable: false),
+                    id_product_type = table.Column<int>(type: "integer", nullable: true),
+                    id_brand = table.Column<int>(type: "integer", nullable: true),
+                    stock_real = table.Column<int>(type: "integer", nullable: true),
                     stock_min = table.Column<int>(type: "integer", nullable: false),
                     stock_max = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_produit", x => x.id_produit);
+                    table.PrimaryKey("PK_product", x => x.id_product);
                     table.ForeignKey(
-                        name: "FK_produits_marque",
-                        column: x => x.id_marque,
+                        name: "FK_products_brand",
+                        column: x => x.id_brand,
                         principalTable: "marque",
-                        principalColumn: "id_marque");
+                        principalColumn: "id_brand");
                     table.ForeignKey(
-                        name: "FK_produits_type_produit",
-                        column: x => x.id_type_produit,
-                        principalTable: "type_produit",
-                        principalColumn: "id_type_produit");
+                        name: "FK_products_product_type",
+                        column: x => x.id_product_type,
+                        principalTable: "product_type",
+                        principalColumn: "id_product_type");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_produit_id_marque",
-                table: "produit",
-                column: "id_marque");
+                name: "IX_product_id_brand",
+                table: "product",
+                column: "id_brand");
 
             migrationBuilder.CreateIndex(
-                name: "IX_produit_id_type_produit",
-                table: "produit",
-                column: "id_type_produit");
+                name: "IX_product_id_product_type",
+                table: "product",
+                column: "id_product_type");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "produit");
+                name: "product");
 
             migrationBuilder.DropTable(
                 name: "marque");
 
             migrationBuilder.DropTable(
-                name: "type_produit");
+                name: "product_type");
         }
     }
 }

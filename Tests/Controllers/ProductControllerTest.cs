@@ -17,12 +17,12 @@ using System.Linq;
 namespace Tests.Controllers;
 
 [TestClass]
-[TestSubject(typeof(ProduitController))]
+[TestSubject(typeof(ProductController))]
 [TestCategory("integration")]
 public class ProductControllerTest
 {
     private readonly AppDbContext  _context;
-    private readonly ProduitController _productController;
+    private readonly ProductController _productController;
     private readonly IMapper _mapper;
     public ProductControllerTest()
     {
@@ -35,13 +35,13 @@ public class ProductControllerTest
 
         _mapper = config.CreateMapper();
 
-        _productController = new ProduitController(_mapper, manager);
+        _productController = new ProductController(_mapper, manager);
     }
     
     [TestCleanup]
     public void Cleanup()
     {
-        _context.Produits.RemoveRange(_context.Produits);
+        _context.Products.RemoveRange(_context.Products);
         _context.SaveChanges();
     }
 
@@ -51,18 +51,18 @@ public class ProductControllerTest
     //    // Given : Un produit en enregistré
     //    Produit produitInDb = new()
     //    {
-    //        NomProduit = "Chaise",
+    //        NameProduct = "Chaise",
     //        Description = "Une superbe chaise",
-    //        NomPhoto = "Une superbe chaise bleu",
+    //        NamePhoto = "Une superbe chaise bleu",
     //        UriPhoto = "https://ikea.fr/chaise.jpg",
-    //        StockReel = 1
+    //        StockReal = 1
     //    };
 
     //    _context.Produits.Add(produitInDb);
     //    _context.SaveChanges();
 
     //    // When : On appelle la méthode GET de l'API pour récupérer le produit
-    //    ActionResult<Produit> action = _productController.Get(produitInDb.IdProduit).GetAwaiter().GetResult();
+    //    ActionResult<Produit> action = _productController.Get(produitInDb.IdProduct).GetAwaiter().GetResult();
 
     //    // Then : On récupère le produit et le code de retour est 200
     //    Assert.IsNotNull(action);
@@ -76,42 +76,42 @@ public class ProductControllerTest
     public void ShouldDeleteProduct()
     {
         // Given : Un produit enregistré
-        Produit produitInDb = new()
+        Product productInDb = new()
         {
-            NomProduit = "Chaise",
+            NameProduct = "Chaise",
             Description = "Une superbe chaise",
-            NomPhoto = "Une superbe chaise bleu",
+            NamePhoto = "Une superbe chaise bleu",
             UriPhoto = "https://ikea.fr/chaise.jpg",
-            StockReel = 1
+            StockReal = 1
 
         };
 
-        _context.Produits.Add(produitInDb);
+        _context.Products.Add(productInDb);
         _context.SaveChanges();
         
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _productController.Delete(produitInDb.IdProduit).GetAwaiter().GetResult();
+        IActionResult action = _productController.Delete(productInDb.IdProduct).GetAwaiter().GetResult();
         
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
-        Assert.IsNull(_context.Produits.Find(produitInDb.IdProduit));
+        Assert.IsNull(_context.Products.Find(productInDb.IdProduct));
     }
     
     [TestMethod]
     public void ShouldNotDeleteProductBecauseProductDoesNotExist()
     {
         // Given : Un produit enregistré
-        Produit produitInDb = new()
+        Product productInDb = new()
         {
-            NomProduit = "Chaise",
+            NameProduct = "Chaise",
             Description = "Une superbe chaise",
-            NomPhoto = "Une superbe chaise bleu",
+            NamePhoto = "Une superbe chaise bleu",
             UriPhoto = "https://ikea.fr/chaise.jpg"
         };
         
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _productController.Delete(produitInDb.IdProduit).GetAwaiter().GetResult();
+        IActionResult action = _productController.Delete(productInDb.IdProduct).GetAwaiter().GetResult();
         
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
@@ -125,19 +125,19 @@ public class ProductControllerTest
     //    IEnumerable<Produit> productInDb = [
     //        new()
     //        {
-    //            NomProduit = "Chaise",
+    //            NameProduct = "Chaise",
     //            Description = "Une superbe chaise",
-    //            NomPhoto = "Une superbe chaise bleu",
+    //            NamePhoto = "Une superbe chaise bleu",
     //            UriPhoto = "https://ikea.fr/chaise.jpg",
-    //            StockReel = 1
+    //            StockReal = 1
     //        },
     //        new()
     //        {
-    //            NomProduit = "Armoir",
+    //            NameProduct = "Armoir",
     //            Description = "Une superbe armoire",
-    //            NomPhoto = "Une superbe armoire jaune",
+    //            NamePhoto = "Une superbe armoire jaune",
     //            UriPhoto = "https://ikea.fr/armoire-jaune.jpg",
-    //            StockReel = 1
+    //            StockReal = 1
     //        }
     //    ];
 
@@ -157,7 +157,7 @@ public class ProductControllerTest
     public void GetProductShouldReturnNotFound()
     {
         // When : On appelle la méthode get de mon api pour récupérer le produit
-        ActionResult<Produit> action = _productController.Get(0).GetAwaiter().GetResult();
+        ActionResult<ProductDetailsDTO> action = _productController.Get(0).GetAwaiter().GetResult();
         
         // Then : On ne renvoie rien et on renvoie NOT_FOUND (404)
         Assert.IsInstanceOfType(action.Result, typeof(NotFoundResult), "Ne renvoie pas 404");
@@ -168,20 +168,20 @@ public class ProductControllerTest
     public void ShouldCreateProduct()
     {
         // Given : Un produit a enregistré
-        Produit productToInsert = new()
+        Product productToInsert = new()
         {
-            NomProduit = "Chaise",
+            NameProduct = "Chaise",
             Description = "Une superbe chaise",
-            NomPhoto = "Une superbe chaise bleu",
+            NamePhoto = "Une superbe chaise bleu",
             UriPhoto = "https://ikea.fr/chaise.jpg",
-            StockReel = 1
+            StockReal = 1
         };
         
         // When : On appel la méthode POST de l'API pour enregistrer le produit
-        ActionResult<Produit> action = _productController.Create(productToInsert).GetAwaiter().GetResult();
+        ActionResult<Product> action = _productController.Create(productToInsert).GetAwaiter().GetResult();
         
         // Then : Le produit est bien enregistré et le code renvoyé et CREATED (201)
-        Produit productInDb = _context.Produits.Find(productToInsert.IdProduit);
+        Product productInDb = _context.Products.Find(productToInsert.IdProduct);
         
         Assert.IsNotNull(productInDb);
         Assert.IsNotNull(action);
@@ -192,57 +192,57 @@ public class ProductControllerTest
     public void ShouldUpdateProduct()
     {
         // Given : Un produit à mettre à jour
-        Produit produitToEdit = new()
+        Product productToEdit = new()
         {
-            NomProduit = "Bureau",
+            NameProduct = "Bureau",
             Description = "Un super bureau",
-            NomPhoto = "Un super bureau bleu",
+            NamePhoto = "Un super bureau bleu",
             UriPhoto = "https://ikea.fr/bureau.jpg",
-            StockReel = 1
+            StockReal = 1
         };
         
-        _context.Produits.Add(produitToEdit);
+        _context.Products.Add(productToEdit);
         _context.SaveChanges();
-        
+
         // Une fois enregistré, on modifie certaines propriétés 
-        produitToEdit.NomProduit = "Lit";
-        produitToEdit.Description = "Un super lit";
+        productToEdit.NameProduct = "Lit";
+        productToEdit.Description = "Un super lit";
 
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit
-        IActionResult action = _productController.Update(produitToEdit.IdProduit, produitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _productController.Update(productToEdit.IdProduct, productToEdit).GetAwaiter().GetResult();
         
         // Then : On vérifie que le produit a bien été modifié et que le code renvoyé et NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
         
-        Produit editedProductInDb = _context.Produits.Find(produitToEdit.IdProduit);
+        Product editedProductInDb = _context.Products.Find(productToEdit.IdProduct);
         
         Assert.IsNotNull(editedProductInDb);
-        Assert.AreEqual(produitToEdit, editedProductInDb);
+        Assert.AreEqual(productToEdit, editedProductInDb);
     }
     
     [TestMethod]
     public void ShouldNotUpdateProductBecauseIdInUrlIsDifferent()
     {
         // Given : Un produit à mettre à jour
-        Produit produitToEdit = new()
+        Product productToEdit = new()
         {
-            NomProduit = "Bureau",
+            NameProduct = "Bureau",
             Description = "Un super bureau",
-            NomPhoto = "Un super bureau bleu",
+            NamePhoto = "Un super bureau bleu",
             UriPhoto = "https://ikea.fr/bureau.jpg",
-            StockReel = 1
+            StockReal = 1
         };
         
-        _context.Produits.Add(produitToEdit);
+        _context.Products.Add(productToEdit);
         _context.SaveChanges();
-        
-        produitToEdit.NomProduit = "Lit";
-        produitToEdit.Description = "Un super lit";
+
+        productToEdit.NameProduct = "Lit";
+        productToEdit.Description = "Un super lit";
 
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit,
         // mais en précisant un ID différent de celui du produit enregistré
-        IActionResult action = _productController.Update(0, produitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _productController.Update(0, productToEdit).GetAwaiter().GetResult();
         
         // Then : On vérifie que l'API renvoie un code BAD_REQUEST (400)
         Assert.IsNotNull(action);
@@ -253,18 +253,18 @@ public class ProductControllerTest
     public void ShouldNotUpdateProductBecauseProductDoesNotExist()
     {
         // Given : Un produit à mettre à jour qui n'est pas enregistré
-        Produit produitToEdit = new()
+        Product productToEdit = new()
         {
-            IdProduit = 20,
-            NomProduit = "Bureau",
+            IdProduct = 20,
+            NameProduct = "Bureau",
             Description = "Un super bureau",
-            NomPhoto = "Un super bureau bleu",
+            NamePhoto = "Un super bureau bleu",
             UriPhoto = "https://ikea.fr/bureau.jpg",
-            StockReel = 1
+            StockReal = 1
         };
         
         // When : On appelle la méthode PUT du controller pour mettre à jour un produit qui n'est pas enregistré
-        IActionResult action = _productController.Update(produitToEdit.IdProduit, produitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _productController.Update(productToEdit.IdProduct, productToEdit).GetAwaiter().GetResult();
         
         // Then : On vérifie que l'API renvoie un code NOT_FOUND (404)
         Assert.IsNotNull(action);

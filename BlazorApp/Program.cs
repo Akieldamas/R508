@@ -20,12 +20,12 @@ namespace BlazorApp
                 BaseAddress = new Uri("https://localhost:5001/")
             });
             builder.Services.AddScoped<ProductService>();
-            builder.Services.AddScoped<MarqueService>();
-            builder.Services.AddScoped<TypeProduitService>();
+            builder.Services.AddScoped<BrandService>();
+            builder.Services.AddScoped<ProductTypeService>();
             builder.Services.AddScoped<ToastNotifications>();
-            builder.Services.AddScoped<ProduitsTableViewModel>();
-            builder.Services.AddScoped<MarqueViewModel>();
-            builder.Services.AddScoped<TypeProduitViewModel>();
+            builder.Services.AddScoped<ProductsViewModel>();
+            builder.Services.AddScoped<BrandViewModel>();
+            builder.Services.AddScoped<ProductTypeViewModel>();
             await builder.Build().RunAsync();
         }
     }

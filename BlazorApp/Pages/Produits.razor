@@ -1,4 +1,4 @@
-﻿@page "/produits"
+﻿@page "/products"
 @inject ProduitsTableViewModel produitsTableViewModel
 @inject IJSRuntime JSRuntime
 
@@ -88,7 +88,7 @@ else
     }
 
     // --- DELETE ---
-    private async Task ConfirmDelete(Produit produit)
+    private async Task ConfirmDelete(Product produit)
     {
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{produit.NomProduit}'?");
         if (confirmed)

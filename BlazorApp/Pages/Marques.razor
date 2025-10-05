@@ -1,4 +1,4 @@
-﻿@page "/marques"
+﻿@page "/brands"
 @inject MarqueViewModel marqueViewModel
 @inject IJSRuntime JSRuntime
 
@@ -54,7 +54,7 @@ else
         ShowMessage(toastMessage);
     }
 
-    private async Task ConfirmDelete(Marque marque)
+    private async Task ConfirmDelete(Brand marque)
     {
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{marque.NomMarque}'?");
         if (confirmed)

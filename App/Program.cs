@@ -22,9 +22,9 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<AppDbContext>();
-        builder.Services.AddScoped<IDataRepository<Produit>, ProductManager>();
-        builder.Services.AddScoped<IDataRepository<Marque>, MarqueManager>();
-        builder.Services.AddScoped<IDataRepository<TypeProduit>, TypeProduitManager>();
+        builder.Services.AddScoped<IDataRepository<Product>, ProductManager>();
+        builder.Services.AddScoped<IDataRepository<Brand>, BrandManager>();
+        builder.Services.AddScoped<IDataRepository<ProductType>, ProductTypeManager>();
 
         var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

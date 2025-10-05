@@ -1,10 +1,10 @@
-﻿@page "/typeproduits"
-@inject TypeProduitViewModel typeProduitViewModel
+﻿@page "/typeproducts"
+@inject TypeProductViewModel typeProduitViewModel
 @inject IJSRuntime JSRuntime
 
-<PageTitle>Type Produits</PageTitle>
+<PageTitle>Type Products</PageTitle>
 
-<h1>Type Produits</h1>
+<h1>Type Products</h1>
 
 <p>Voir les types de produits, supprimer aussi!</p>
 
@@ -54,7 +54,7 @@ else
         ShowMessage(toastMessage);
     }
 
-    private async Task ConfirmDelete(TypeProduit typeProduit)
+    private async Task ConfirmDelete(TypeProduct typeProduit)
     {
         bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{typeProduit.NomTypeProduit}'?");
         if (confirmed)

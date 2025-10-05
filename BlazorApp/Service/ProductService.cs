@@ -2,7 +2,7 @@ using BlazorApp.Models;
 using System.Net.Http.Json;
 namespace BlazorApp.Service;
 
-public class ProductService : IService<Produit>
+public class ProductService : IService<Product>
 {
     private readonly HttpClient httpClient;
 
@@ -11,9 +11,9 @@ public class ProductService : IService<Produit>
         this.httpClient = httpClient;
     }
 
-    public async Task AddAsync(Produit produit)
+    public async Task AddAsync(Product produit)
     {
-        await httpClient.PostAsJsonAsync<Produit>("api/produits", produit);
+        await httpClient.PostAsJsonAsync<Product>("api/produits", produit);
     }
 
     public async Task DeleteAsync(int id)
@@ -21,17 +21,17 @@ public class ProductService : IService<Produit>
         await httpClient.DeleteAsync($"api/produits/{id}");
     }
 
-    public async Task<List<Produit>?> GetAllAsync()
+    public async Task<List<Product>?> GetAllAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Produit>?>("api/produits");
+        return await httpClient.GetFromJsonAsync<List<Product>?>("api/produits");
     }
 
-    public async Task<Produit?> GetByIdAsync(int id)
+    public async Task<Product?> GetByIdAsync(int id)
     {
-        return await httpClient.GetFromJsonAsync<Produit?>($"api/produits/{id}");
+        return await httpClient.GetFromJsonAsync<Product?>($"api/produits/{id}");
     }
-    public async Task UpdateAsync(Produit updatedEntity)
+    public async Task UpdateAsync(Product updatedEntity)
     {
-        await httpClient.PutAsJsonAsync<Produit>($"api/produits", updatedEntity);
+        await httpClient.PutAsJsonAsync<Product>($"api/produits", updatedEntity);
     }
 }

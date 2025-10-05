@@ -17,90 +17,90 @@ using System.Linq;
 namespace Tests.Controllers;
 
 [TestClass]
-[TestSubject(typeof(TypeProduitController))]
+[TestSubject(typeof(ProductTypeController))]
 [TestCategory("integration")]
-public class TypeProduitControllerTest
+public class ProductTypeControllerTest
 {
     private readonly AppDbContext _context;
-    private readonly TypeProduitController _TypeProduitController;
+    private readonly ProductTypeController _ProductTypeController;
     private readonly IMapper _mapper;
-    public TypeProduitControllerTest()
+    public ProductTypeControllerTest()
     {
         _context = new AppDbContext();
 
-        TypeProduitManager manager = new(_context);
+        ProductTypeManager manager = new(_context);
         var config = new MapperConfiguration(cfg => {
             cfg.AddProfile<MapperProfile>();
         }, new LoggerFactory());
 
         _mapper = config.CreateMapper();
 
-        _TypeProduitController = new TypeProduitController(_mapper, manager);
+        _ProductTypeController = new ProductTypeController(_mapper, manager);
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-        _context.TypeProduits.RemoveRange(_context.TypeProduits);
+        _context.ProductTypes.RemoveRange(_context.ProductTypes);
         _context.SaveChanges();
     }
 
     [TestMethod]
-    public void ShouldGetTypeProduit()
+    public void ShouldGetProductType()
     {
         // Given : Une TypeProduit en DB
-        TypeProduit TypeProduitInDb = new()
+        ProductType ProductTypeInDb = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
-        _context.TypeProduits.Add(TypeProduitInDb);
+        _context.ProductTypes.Add(ProductTypeInDb);
         _context.SaveChanges();
 
         // When : On appelle la méthode GET de l'API pour récupérer le produit
-        ActionResult<TypeProduitDto> action = _TypeProduitController.Get(TypeProduitInDb.IdTypeProduit).GetAwaiter().GetResult();
+        ActionResult<ProductTypeDTO> action = _ProductTypeController.Get(ProductTypeInDb.IdProductType).GetAwaiter().GetResult();
 
         // Then : On récupère le produit et le code de retour est 200
         Assert.IsNotNull(action);
-        Assert.IsInstanceOfType(action.Value, typeof(TypeProduitDto));
+        Assert.IsInstanceOfType(action.Value, typeof(ProductTypeDTO));
 
-        TypeProduitDto returnTypeProduit = action.Value;
-        Assert.AreEqual(_mapper.Map<TypeProduitDto>(TypeProduitInDb), returnTypeProduit);
+        ProductTypeDTO returnProductType = action.Value;
+        Assert.AreEqual(_mapper.Map<ProductTypeDTO>(ProductTypeInDb), returnProductType);
     }
 
     [TestMethod]
-    public void ShouldDeleteTypeProduit()
+    public void ShouldDeleteProductType()
     {
         // Given : Une TypeProduit en DB
-        TypeProduit TypeProduitInDb = new()
+        ProductType ProductTypeInDd = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
-        _context.TypeProduits.Add(TypeProduitInDb);
+        _context.ProductTypes.Add(ProductTypeInDd);
         _context.SaveChanges();
 
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _TypeProduitController.Delete(TypeProduitInDb.IdTypeProduit).GetAwaiter().GetResult();
+        IActionResult action = _ProductTypeController.Delete(ProductTypeInDd.IdProductType).GetAwaiter().GetResult();
 
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
-        Assert.IsNull(_context.TypeProduits.Find(TypeProduitInDb.IdTypeProduit));
+        Assert.IsNull(_context.ProductTypes.Find(ProductTypeInDd.IdProductType));
     }
 
     [TestMethod]
-    public void ShouldNotDeleteTypeProduitBecauseTypeProduitDoesNotExist()
+    public void ShouldNotDeleteProductTypeBecauseProductTypeDoesNotExist()
     {
 
         // Given : Une TypeProduit en DB
-        TypeProduit TypeProduitInDb = new()
+        ProductType ProductTypeInDb = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
         // When : On souhaite supprimer un produit depuis l'API
-        IActionResult action = _TypeProduitController.Delete(TypeProduitInDb.IdTypeProduit).GetAwaiter().GetResult();
+        IActionResult action = _ProductTypeController.Delete(ProductTypeInDb.IdProductType).GetAwaiter().GetResult();
 
         // Then : Le produit a bien été supprimé et le code HTTP est NO_CONTENT (204)
         Assert.IsNotNull(action);
@@ -108,37 +108,37 @@ public class TypeProduitControllerTest
     }
 
     [TestMethod]
-    public void ShouldGetAllTypeProduits()
+    public void ShouldGetAllProductTypes()
     {
         // Given : Des TypeProduits enregistrées
-        IEnumerable<TypeProduit> TypeProduitInDb = [
+        IEnumerable<ProductType> ProductTypeInDb = [
             new()
-        {
-            NomTypeProduit = "Ikea"
-        },
-           new()
-        {
-            NomTypeProduit = "Auchan"
-        }
+            {
+                NameProductType = "Ikea"
+            },
+            new()
+            {
+                NameProductType = "Auchan"
+            }
         ];
 
-        _context.TypeProduits.AddRange(TypeProduitInDb);
+        _context.ProductTypes.AddRange(ProductTypeInDb);
         _context.SaveChanges();
 
         // When : On souhaite récupérer tous les TypeProduits
-        var TypeProduits = _TypeProduitController.GetAll().GetAwaiter().GetResult();
+        var ProductTypes = _ProductTypeController.GetAll().GetAwaiter().GetResult();
 
         // Then : Tous les TypeProduits sont récupérés
-        Assert.IsNotNull(TypeProduits);
-        Assert.IsInstanceOfType(TypeProduits.Value, typeof(IEnumerable<TypeProduitDto>));
-        Assert.IsTrue(_mapper.Map<IEnumerable<TypeProduitDto>>(TypeProduitInDb).SequenceEqual(TypeProduits.Value));
+        Assert.IsNotNull(ProductTypes);
+        Assert.IsInstanceOfType(ProductTypes.Value, typeof(IEnumerable<ProductTypeDTO>));
+        Assert.IsTrue(_mapper.Map<IEnumerable<ProductTypeDTO>>(ProductTypeInDb).SequenceEqual(ProductTypes.Value));
     }
 
     [TestMethod]
-    public void GetTypeProduitShouldReturnNotFound()
+    public void GetProductTypeShouldReturnNotFound()
     {
         // When : On appelle la méthode get de mon api pour récupérer le produit
-        ActionResult<TypeProduitDto> action = _TypeProduitController.Get(0).GetAwaiter().GetResult();
+        ActionResult<ProductTypeDTO> action = _ProductTypeController.Get(0).GetAwaiter().GetResult();
 
         // Then : On ne renvoie rien et on renvoie NOT_FOUND (404)
         Assert.IsInstanceOfType(action.Result, typeof(NotFoundResult), "Ne renvoie pas 404");
@@ -146,69 +146,69 @@ public class TypeProduitControllerTest
     }
 
     [TestMethod]
-    public void ShouldCreateTypeProduit()
+    public void ShouldCreateProductType()
     {
         // Given : Un produit a enregistré
-        TypeProduit TypeProduitToInsert = new()
+        ProductType ProductTypeToInsert = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
         // When : On appel la méthode POST de l'API pour enregistrer le produit
-        ActionResult<TypeProduit> action = _TypeProduitController.Create(TypeProduitToInsert).GetAwaiter().GetResult();
+        ActionResult<ProductType> action = _ProductTypeController.Create(ProductTypeToInsert).GetAwaiter().GetResult();
 
         // Then : Le produit est bien enregistré et le code renvoyé et CREATED (201)
-        TypeProduit TypeProduitInDb = _context.TypeProduits.Find(TypeProduitToInsert.IdTypeProduit);
+        ProductType ProductTypeInDb = _context.ProductTypes.Find(ProductTypeToInsert.IdProductType);
 
-        Assert.IsNotNull(TypeProduitInDb);
+        Assert.IsNotNull(ProductTypeInDb);
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action.Result, typeof(CreatedAtActionResult));
     }
 
     [TestMethod]
-    public void ShouldUpdateTypeProduit()
+    public void ShouldUpdateProductType()
     {
         // Given : Une TypeProduit à mettre à jour
-        TypeProduit TypeProduitToEdit = new()
+        ProductType ProductTypeToEdit = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
-        _context.TypeProduits.Add(TypeProduitToEdit);
+        _context.ProductTypes.Add(ProductTypeToEdit);
         _context.SaveChanges();
 
         // Une fois enregistré, on modifie certaines propriétés 
-        TypeProduitToEdit.NomTypeProduit = "Carnival";
+        ProductTypeToEdit.NameProductType = "Carnival";
 
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit
-        IActionResult action = _TypeProduitController.Update(TypeProduitToEdit.IdTypeProduit, TypeProduitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _ProductTypeController.Update(ProductTypeToEdit.IdProductType, ProductTypeToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que le produit a bien été modifié et que le code renvoyé et NO_CONTENT (204)
         Assert.IsNotNull(action);
         Assert.IsInstanceOfType(action, typeof(NoContentResult));
 
-        TypeProduit editedTypeProduitInDb = _context.TypeProduits.Find(TypeProduitToEdit.IdTypeProduit);
+        ProductType editedTypeProduitInDb = _context.ProductTypes.Find(ProductTypeToEdit.IdProductType);
 
         Assert.IsNotNull(editedTypeProduitInDb);
-        Assert.AreEqual(TypeProduitToEdit, editedTypeProduitInDb);
+        Assert.AreEqual(ProductTypeToEdit, editedTypeProduitInDb);
     }
 
     [TestMethod]
     public void ShouldNotUpdateTypeProduitBecauseIdInUrlIsDifferent()
     {
         // Given : Une TypeProduit à mettre à jour
-        TypeProduit TypeProduitToEdit = new()
+        ProductType ProductTypeToEdit = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
-        _context.TypeProduits.Add(TypeProduitToEdit);
+        _context.ProductTypes.Add(ProductTypeToEdit);
         _context.SaveChanges();
 
-        TypeProduitToEdit.NomTypeProduit = "Auchan";
+        ProductTypeToEdit.NameProductType = "Auchan";
         // When : On appelle la méthode PUT du controller pour mettre à jour le produit,
         // mais en précisant un ID différent de celui du produit enregistré
-        IActionResult action = _TypeProduitController.Update(0, TypeProduitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _ProductTypeController.Update(0, ProductTypeToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que l'API renvoie un code BAD_REQUEST (400)
         Assert.IsNotNull(action);
@@ -219,14 +219,14 @@ public class TypeProduitControllerTest
     public void ShouldNotUpdateTypeProduitBecauseTypeProduitDoesNotExist()
     {
         // Given : Une TypeProduit à mettre à jour
-        TypeProduit TypeProduitToEdit = new()
+        ProductType ProductTypeToEdit = new()
         {
-            NomTypeProduit = "Ikea"
+            NameProductType = "Ikea"
         };
 
 
         // When : On appelle la méthode PUT du controller pour mettre à jour un produit qui n'est pas enregistré
-        IActionResult action = _TypeProduitController.Update(TypeProduitToEdit.IdTypeProduit, TypeProduitToEdit).GetAwaiter().GetResult();
+        IActionResult action = _ProductTypeController.Update(ProductTypeToEdit.IdProductType, ProductTypeToEdit).GetAwaiter().GetResult();
 
         // Then : On vérifie que l'API renvoie un code NOT_FOUND (404)
         Assert.IsNotNull(action);
