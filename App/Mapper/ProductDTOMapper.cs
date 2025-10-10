@@ -1,0 +1,20 @@
+﻿using AutoMapper;
+using App.Models;
+using App.DTO;
+namespace App.Mapper;
+
+public class ProductDTOMapper : Profile
+{
+    public ProductDTOMapper()
+    {
+        CreateMap<Product, ProductDTO>()
+        .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.ProductTypeNavigation.NameProductType ?? string.Empty))
+        .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.BrandNavigation.NameBrand ?? String.Empty))
+        .ReverseMap()
+        .ForMember(dest => dest.Description, opt => opt.MapFrom(src => string.Empty))
+        .ForMember(dest => dest.NamePhoto, opt => opt.MapFrom(src => string.Empty))
+        .ForMember(dest => dest.UriPhoto, opt => opt.MapFrom(src => string.Empty))
+        .ForMember(d => d.ProductTypeNavigation, o => o.Ignore())
+        .ForMember(d => d.BrandNavigation, o => o.Ignore());
+    }
+}

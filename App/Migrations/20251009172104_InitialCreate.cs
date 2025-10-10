@@ -12,7 +12,7 @@ namespace App.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "marque",
+                name: "brand",
                 columns: table => new
                 {
                     id_brand = table.Column<int>(type: "integer", nullable: false)
@@ -21,7 +21,7 @@ namespace App.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_marque", x => x.id_brand);
+                    table.PrimaryKey("PK_brand", x => x.id_brand);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +51,8 @@ namespace App.Migrations
                     id_brand = table.Column<int>(type: "integer", nullable: true),
                     stock_real = table.Column<int>(type: "integer", nullable: true),
                     stock_min = table.Column<int>(type: "integer", nullable: false),
-                    stock_max = table.Column<int>(type: "integer", nullable: false)
+                    stock_max = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,7 +60,7 @@ namespace App.Migrations
                     table.ForeignKey(
                         name: "FK_products_brand",
                         column: x => x.id_brand,
-                        principalTable: "marque",
+                        principalTable: "brand",
                         principalColumn: "id_brand");
                     table.ForeignKey(
                         name: "FK_products_product_type",
@@ -86,7 +87,7 @@ namespace App.Migrations
                 name: "product");
 
             migrationBuilder.DropTable(
-                name: "marque");
+                name: "brand");
 
             migrationBuilder.DropTable(
                 name: "product_type");

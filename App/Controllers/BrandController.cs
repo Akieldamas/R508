@@ -63,7 +63,10 @@ public class BrandController(IMapper _mapper, IDataRepository<Brand> manager) : 
             return BadRequest(ModelState);
 
         Brand brands = _mapper.Map<Brand>(brandDTO);
-        
+
+        if (brands == null)
+            return BadRequest("Mapper Error (Dto -> Brand).");
+
         await manager.AddAsync(brands);
         return CreatedAtAction("Get", new { id = brandDTO.IdBrand }, brands);
     }

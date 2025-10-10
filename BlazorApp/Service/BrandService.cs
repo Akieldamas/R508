@@ -13,25 +13,25 @@ public class BrandService : IService<Brand>
 
     public async Task AddAsync(Brand marque)
     {
-        await httpClient.PostAsJsonAsync<Brand>("api/marque", marque);
+        await httpClient.PostAsJsonAsync<Brand>("api/brands", marque);
     }
 
     public async Task DeleteAsync(int id)
     {
-        await httpClient.DeleteAsync($"api/marque/{id}");
+        await httpClient.DeleteAsync($"api/brands/{id}");
     }
 
     public async Task<List<Brand>?> GetAllAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Brand>?>("api/marque");
+        return await httpClient.GetFromJsonAsync<List<Brand>?>("api/brands");
     }
 
     public async Task<Brand?> GetByIdAsync(int id)
     {
-        return await httpClient.GetFromJsonAsync<Brand?>($"api/marque/{id}");
+        return await httpClient.GetFromJsonAsync<Brand?>($"api/brands/{id}");
     }
     public async Task UpdateAsync(Brand updatedMarque)
     {
-        await httpClient.PutAsJsonAsync<Brand>($"api/marque", updatedMarque);
+        await httpClient.PutAsJsonAsync<Brand>($"api/brands", updatedMarque);
     }
 }

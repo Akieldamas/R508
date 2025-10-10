@@ -33,7 +33,7 @@ public class Program
             options.AddPolicy(name: MyAllowSpecificOrigins,
                 policy =>
                 {
-                    policy.WithOrigins("https://localhost:5002")
+                    policy.WithOrigins("http://localhost:5002")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });

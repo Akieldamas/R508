@@ -1,45 +1,57 @@
-﻿@page "/typeproducts"
-@inject TypeProductViewModel typeProduitViewModel
+﻿@page "/producttypes"
+@inject ProductTypeViewModel productTypeViewModel
 @inject IJSRuntime JSRuntime
 
-<PageTitle>Type Products</PageTitle>
+<PageTitle>Type Produits</PageTitle>
 
-<h1>Type Products</h1>
+<section class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-success">Types de Produits</h1>
+        <p class="lead text-muted">
+            Consultez les différents types de produits. Vous pouvez aussi les supprimer si besoin.
+        </p>
+    </div>
 
-<p>Voir les types de produits, supprimer aussi!</p>
-
-@if (typeProduitViewModel.TypeProduits == null)
-{
-    <p><em>Loading...</em></p>
-}
-else if (!typeProduitViewModel.TypeProduits.Any())
-{
-    <p><em>No products found.</em></p>
-}
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom Type</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var typeProduit in typeProduitViewModel.TypeProduits)
+    @if (productTypeViewModel.ProductTypes == null)
+    {
+        <div class="text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+        </div>
+    }
+    else if (!productTypeViewModel.ProductTypes.Any())
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            Aucun type de produit trouvé.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var typeProduit in productTypeViewModel.ProductTypes)
             {
-                <tr>
-                    <td>@typeProduit.IdTypeProduit</td>
-                    <td>@typeProduit.NomTypeProduit</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger me-2" @onclick="() => ConfirmDelete(typeProduit)">X</button>
-                    </td>
-                </tr>
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title text-dark">
+                                <i class="bi bi-tag me-2 text-success"></i>
+                                @typeProduit.NameProductType
+                            </h5>
+                            <p class="card-text text-muted">ID: @typeProduit.IdProductType</p>
+                            <div class="mt-auto">
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => ConfirmDelete(typeProduit)">
+                                    <i class="bi bi-trash"></i> Supprimer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
+        </div>
+    }
+</section>
+
 
 <Toasts Messages="messages" Placement="ToastsPlacement.TopRight" AutoHide="true" Delay="5000" ShowCloseButton="true" />
 
@@ -50,18 +62,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var toastMessage = await typeProduitViewModel.LoadData();
-        ShowMessage(toastMessage);
+        var toast = await productTypeViewModel.LoadData();
+        ShowMessage(toast);
     }
 
-    private async Task ConfirmDelete(TypeProduct typeProduit)
+    private async Task ConfirmDelete(ProductType typeProduit)
     {
-        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{typeProduit.NomTypeProduit}'?");
+        bool confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{typeProduit.NameProductType}'?");
         if (confirmed)
         {
-            var toast = await typeProduitViewModel.DeleteProduit(typeProduit);
+            var toast = await productTypeViewModel.DeleteProductType(typeProduit);
             ShowMessage(toast);
         }
     }
 }
-

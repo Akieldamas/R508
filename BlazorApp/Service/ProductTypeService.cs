@@ -13,25 +13,25 @@ public class ProductTypeService : IService<ProductType>
 
     public async Task AddAsync(ProductType typeProduit)
     {
-        await httpClient.PostAsJsonAsync<ProductType>("api/typeproduit", typeProduit);
+        await httpClient.PostAsJsonAsync<ProductType>("api/producttypes", typeProduit);
     }
 
     public async Task DeleteAsync(int id)
     {
-        await httpClient.DeleteAsync($"api/typeproduit/{id}");
+        await httpClient.DeleteAsync($"api/producttypes/{id}");
     }
 
     public async Task<List<ProductType>?> GetAllAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<ProductType>?>("api/typeproduit");
+        return await httpClient.GetFromJsonAsync<List<ProductType>?>("api/producttypes");
     }
 
     public async Task<ProductType?> GetByIdAsync(int id)
     {
-        return await httpClient.GetFromJsonAsync<ProductType?>($"api/typeproduit/{id}");
+        return await httpClient.GetFromJsonAsync<ProductType?>($"api/producttypes/{id}");
     }
     public async Task UpdateAsync(ProductType updatedTypeProduct)
     {
-        await httpClient.PutAsJsonAsync<ProductType>($"api/typeproduit", updatedTypeProduct);
+        await httpClient.PutAsJsonAsync<ProductType>($"api/producttypes", updatedTypeProduct);
     }
 }

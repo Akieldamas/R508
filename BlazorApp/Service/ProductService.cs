@@ -13,25 +13,25 @@ public class ProductService : IService<Product>
 
     public async Task AddAsync(Product produit)
     {
-        await httpClient.PostAsJsonAsync<Product>("api/produits", produit);
+        await httpClient.PostAsJsonAsync<Product>("api/products", produit);
     }
 
     public async Task DeleteAsync(int id)
     {
-        await httpClient.DeleteAsync($"api/produits/{id}");
+        await httpClient.DeleteAsync($"api/products/{id}");
     }
 
     public async Task<List<Product>?> GetAllAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Product>?>("api/produits");
+        return await httpClient.GetFromJsonAsync<List<Product>?>("api/products");
     }
 
     public async Task<Product?> GetByIdAsync(int id)
     {
-        return await httpClient.GetFromJsonAsync<Product?>($"api/produits/{id}");
+        return await httpClient.GetFromJsonAsync<Product?>($"api/products/{id}");
     }
     public async Task UpdateAsync(Product updatedEntity)
     {
-        await httpClient.PutAsJsonAsync<Product>($"api/produits", updatedEntity);
+        await httpClient.PutAsJsonAsync<Product>($"api/products", updatedEntity);
     }
 }

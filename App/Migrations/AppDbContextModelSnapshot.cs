@@ -38,7 +38,7 @@ namespace App.Migrations
 
                     b.HasKey("IdBrand");
 
-                    b.ToTable("marque");
+                    b.ToTable("brand");
                 });
 
             modelBuilder.Entity("App.Models.Product", b =>
@@ -72,6 +72,10 @@ namespace App.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name_product");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("boolean")
+                        .HasColumnName("status");
 
                     b.Property<int>("StockMax")
                         .HasColumnType("integer")

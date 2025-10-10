@@ -1,6 +1,6 @@
 ﻿using BlazorApp.Models;
 
-namespace BlazorApp.Policies
+namespace BlazorApp.Models.Policies
 {
     public class PrecommandePolicy: IProductPolicy
     {

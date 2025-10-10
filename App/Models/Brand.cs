@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace App.Models;
 
-[Table(("marque"))]
+[Table(("brand"))]
 public class Brand
 {
     [Key]

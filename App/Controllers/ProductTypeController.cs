@@ -18,7 +18,7 @@ public class ProductTypeController(IMapper _mapper, IDataRepository<ProductType>
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ProductTypeDTO?>> Get(int id)
     {
-        var result = await manager.GetByIdAsync(id);
+        ActionResult<ProductType?> result = await manager.GetByIdAsync(id);
         return result.Value == null ? NotFound() : _mapper.Map<ProductTypeDTO>(result.Value);
     }
 
@@ -40,21 +40,28 @@ public class ProductTypeController(IMapper _mapper, IDataRepository<ProductType>
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<IEnumerable<ProductTypeDTO>>> GetAll()
     {
-        IEnumerable<ProductTypeDTO> TypeProduits = _mapper.Map<IEnumerable<ProductTypeDTO>>((await manager.GetAllAsync()).Value);
-        return new ActionResult<IEnumerable<ProductTypeDTO>>(TypeProduits);
+        var result = await manager.GetAllAsync();
+        IEnumerable<ProductTypeDTO> _productType = _mapper.Map<IEnumerable<ProductTypeDTO>>(result.Value);
+        return _productType == null ? NotFound() : Ok(_productType);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ProductType>> Create([FromBody] ProductType TypeProduits)
+    public async Task<ActionResult<ProductType>> Create([FromBody] ProductTypeDTO productTypeDTO)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
-        await manager.AddAsync(TypeProduits);
-        return CreatedAtAction("Get", new { id = TypeProduits.IdProductType }, TypeProduits);
+
+        ProductType productType = _mapper.Map<ProductType>(productTypeDTO);
+        if (productType == null)
+            return BadRequest();
+
+        await manager.AddAsync(productType);
+
+        return CreatedAtAction("Get", new { id = productType.IdProductType }, productTypeDTO);
     }
 
     [HttpPut("{id}")]

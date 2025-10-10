@@ -29,7 +29,7 @@ public class BrandViewModel
         return _toastNotifications.Create("Brands not found", ToastType.Warning, "Failed!");
     }
 
-    public async Task<ToastMessage> CreateProduit(Brand marque)
+    public async Task<ToastMessage> CreateBrand(Brand marque)
     {
         try
         {
@@ -47,14 +47,14 @@ public class BrandViewModel
         }
     }
 
-    public async Task<ToastMessage> DeleteProduit(Brand marque)
+    public async Task<ToastMessage> DeleteBrand(Brand marque)
     {
         await _service.DeleteAsync(marque.IdBrand);
         await LoadData();
         return _toastNotifications.Create($"Deleted {marque.NameBrand}", ToastType.Danger, "Deleted");
     }
 
-    public async Task<ToastMessage> UpdateProduit(Brand marque)
+    public async Task<ToastMessage> UpdateBrand(Brand marque)
     {
         await _service.UpdateAsync(marque);
         await LoadData();

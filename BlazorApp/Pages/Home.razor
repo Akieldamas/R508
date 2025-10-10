@@ -1,7 +1,34 @@
 ﻿@page "/"
+<PageTitle>Welcome</PageTitle>
 
-<PageTitle>Home</PageTitle>
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-10">
+            <h1 class="display-2 fw-bold">Welcome to <span class="text-primary">Gestion Inventaire App</span>!</h1>
+            <p class="lead mt-3">
+                Built with C# .NET and Blazor in BUT3 Informatique 2025/2026
+            </p>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+            <h1 class="display-4 fw-bold">View our different <span class="text-primary">Items</span>!</h1>
+            <a href="/products" class="btn btn-primary btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> View Products
+            </a>
+            <a href="/brands" class="btn btn-warning btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> View Brands
+            </a>
+            <a href="/producttypes" class="btn btn-success btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> View ProductTypes
+            </a>
+            <h1 class="display-4 fw-bold">Add <span class="text-primary">Items</span>!</h1>
+            <a href="/addproduct" class="btn btn-primary btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> Add Products
+            </a>
+            <a href="/addbrand" class="btn btn-warning btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> Add Brands
+            </a>
+            <a href="/addproducttype" class="btn btn-success btn-lg mt-4">
+                <i class="bi bi-box-seam me-2"></i> Add ProductTypes
+            </a>
+        </div>
+    </div>
+</div>

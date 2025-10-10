@@ -29,7 +29,7 @@ public class ProductsViewModel
         return _toastNotifications.Create("Products not found", ToastType.Warning, "Failed!");
     }
 
-    public async Task<ToastMessage> CreateProduit(Product product)
+    public async Task<ToastMessage> CreateProduct(Product product)
     {
         try
         {
@@ -42,14 +42,14 @@ public class ProductsViewModel
         }
     }
 
-    public async Task<ToastMessage> DeleteProduit(Product product)
+    public async Task<ToastMessage> DeleteProduct(Product product)
     {
         await _service.DeleteAsync(product.IdProduct);
         await LoadData();
         return _toastNotifications.Create($"Deleted {product.NameProduct}", ToastType.Danger, "Deleted");
     }
 
-    public async Task<ToastMessage> UpdateProduit(Product product)
+    public async Task<ToastMessage> UpdateProduct(Product product)
     {
         await _service.UpdateAsync(product);
         await LoadData();
