@@ -24,8 +24,6 @@ public class Product
 
     public virtual ProductType? ProductTypeNavigation { get; set; }
 
-    
-
     private bool Equals(Product other)
     {
         return NameProduct == other.NameProduct;

@@ -3,6 +3,7 @@ using App.Mapper;
 using App.Models;
 using App.Models.EntityFramework;
 using App.Models.Repository;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace App;
@@ -22,6 +23,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<AppDbContext>();
+        builder.Services.AddSingleton<IMapper>(MapperInstance.GetInstance());
         builder.Services.AddScoped<IDataRepository<Product>, ProductManager>();
         builder.Services.AddScoped<IDataRepository<Brand>, BrandManager>();
         builder.Services.AddScoped<IDataRepository<ProductType>, ProductTypeManager>();

@@ -83,7 +83,7 @@ public class BrandController(IMapper _mapper, IDataRepository<Brand, int, string
         }
 
         ActionResult<Brand?> brandToUpdate = await manager.GetByIdAsync(id);
-
+            
         if (brandToUpdate.Value == null)
         {
             return NotFound();

@@ -33,11 +33,7 @@ public class BrandControllerTest
         BrandManager manager = new(_context);
 
         // Configuration d'AutoMapper
-        var config = new MapperConfiguration(cfg => {
-            cfg.AddProfile<MapperProfile>();
-        }, new LoggerFactory());
-
-        _mapper = config.CreateMapper();
+        _mapper = MapperInstance.GetInstance();
 
         // Création du controller à tester
         _brandController = new BrandController(_mapper, manager);
