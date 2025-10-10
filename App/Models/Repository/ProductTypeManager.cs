@@ -8,43 +8,43 @@ namespace App.Models.Repository;
 //{
 //    // Place pour des méthodes spécifiques aux types de produits, aucune en ce moment
 //}
-public class ProductTypeManager: GenericManager<ProductType>
+public class ProductTypeManager(AppDbContext context): IDataRepository<ProductType, int, string>
 {
-    public ProductTypeManager(AppDbContext context) : base(context) { }
+    //public ProductTypeManager(AppDbContext context) : base(context) { }
 
-    //public async Task<ActionResult<IEnumerable<ProductType>>> GetAllAsync()
-    //{
-    //    return await context.ProductTypes.ToListAsync();
-    //}
+    public async Task<IEnumerable<ProductType>> GetAllAsync()
+    {
+        return await context.ProductTypes.ToListAsync();
+    }
 
-    //public async Task<ActionResult<ProductType?>> GetByIdAsync(int id)
-    //{
-    //    return await context.ProductTypes.FindAsync(id);
-    //}
+    public async Task<ProductType?> GetByIdAsync(int id)
+    {
+        return await context.ProductTypes.FindAsync(id);
+    }
 
-    //public async Task<ActionResult<ProductType?>> GetByStringAsync(string str)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public async Task<ProductType?> GetByKeyAsync(string str)
+    {
+        throw new NotImplementedException();
+    }
 
-    //public async Task AddAsync(ProductType entity)
-    //{
-    //    await context.ProductTypes.AddAsync(entity);
-    //    await context.SaveChangesAsync();
-    //}
+    public async Task AddAsync(ProductType entity)
+    {
+        await context.ProductTypes.AddAsync(entity);
+        await context.SaveChangesAsync();
+    }
 
-    //public async Task UpdateAsync(ProductType entityToUpdate, ProductType entity)
-    //{
-    //    context.ProductTypes.Attach(entityToUpdate);
-    //    context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+    public async Task UpdateAsync(ProductType entityToUpdate, ProductType entity)
+    {
+        context.ProductTypes.Attach(entityToUpdate);
+        context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
 
-    //    await context.SaveChangesAsync();
-    //}
+        await context.SaveChangesAsync();
+    }
 
-    //public async Task DeleteAsync(ProductType entity)
-    //{
-    //    context.ProductTypes.Remove(entity);
-    //    await context.SaveChangesAsync();
-    //}
+    public async Task DeleteAsync(ProductType entity)
+    {
+        context.ProductTypes.Remove(entity);
+        await context.SaveChangesAsync();
+    }
 }
 

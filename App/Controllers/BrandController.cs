@@ -12,7 +12,7 @@ namespace App.Controllers;
 [Route("api/brands")]
 [ApiController]
 [EnableCors("_myAllowSpecificOrigins")]
-public class BrandController(IMapper _mapper, IDataRepository<Brand> manager) : ControllerBase
+public class BrandController(IMapper _mapper, IDataRepository<Brand, int, string> manager) : ControllerBase
 {
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -20,7 +20,7 @@ public class BrandController(IMapper _mapper, IDataRepository<Brand> manager) : 
     public async Task<ActionResult<BrandDTO?>> Get(int id)
     {
         var result = await manager.GetByIdAsync(id);
-        return result.Value == null ? NotFound() : _mapper.Map<BrandDTO>(result.Value);
+        return result == null ? NotFound() : _mapper.Map<BrandDTO>(result);
     }
 
     [HttpDelete("{id}")]
@@ -41,7 +41,7 @@ public class BrandController(IMapper _mapper, IDataRepository<Brand> manager) : 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<IEnumerable<BrandDTO>>> GetAll()
     {
-        IEnumerable<BrandDTO> brands = _mapper.Map<IEnumerable<BrandDTO>>((await manager.GetAllAsync()).Value);
+        IEnumerable<BrandDTO> brands = _mapper.Map<IEnumerable<BrandDTO>>((await manager.GetAllAsync()));
         return new ActionResult<IEnumerable<BrandDTO>>(brands);
     }
 

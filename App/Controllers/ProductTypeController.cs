@@ -11,7 +11,7 @@ namespace App.Controllers;
 [Route("api/producttypes")]
 [ApiController]
 [EnableCors("_myAllowSpecificOrigins")]
-public class ProductTypeController(IMapper _mapper, IDataRepository<ProductType> manager) : ControllerBase
+public class ProductTypeController(IMapper _mapper, IDataRepository<ProductType, int, string> manager) : ControllerBase
 {
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -41,7 +41,7 @@ public class ProductTypeController(IMapper _mapper, IDataRepository<ProductType>
     public async Task<ActionResult<IEnumerable<ProductTypeDTO>>> GetAll()
     {
         var result = await manager.GetAllAsync();
-        IEnumerable<ProductTypeDTO> _productType = _mapper.Map<IEnumerable<ProductTypeDTO>>(result.Value);
+        IEnumerable<ProductTypeDTO> _productType = _mapper.Map<IEnumerable<ProductTypeDTO>>(result);
         return _productType == null ? NotFound() : Ok(_productType);
     }
 

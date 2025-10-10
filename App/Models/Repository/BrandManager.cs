@@ -10,43 +10,41 @@ namespace App.Models.Repository;
 //}
 
 
-public class BrandManager : GenericManager<Brand>
+public class BrandManager(AppDbContext context): IDataRepository<Brand, int, string>
 {
-    public BrandManager(AppDbContext context) : base(context) { }
+    public async Task<IEnumerable<Brand>> GetAllAsync()
+    {
+        return await context.Brands.ToListAsync();
+    }
 
-    //public async Task<ActionResult<IEnumerable<Brand>>> GetAllAsync()
-    //{
-    //    return await context.Brands.ToListAsync();
-    //}
+    public async Task<Brand?> GetByIdAsync(int id)
+    {
+        return await context.Brands.FindAsync(id);
+    }
 
-    //public async Task<ActionResult<Brand?>> GetByIdAsync(int id)
-    //{
-    //    return await context.Brands.FindAsync(id);
-    //}
+    public async Task<Brand?> GetByKeyAsync(string str)
+    {
+        throw new NotImplementedException();
+    }
 
-    //public async Task<ActionResult<Brand?>> GetByStringAsync(string str)
-    //{
-    //    throw new NotImplementedException();
-    //}
+    public async Task AddAsync(Brand entity)
+    {
+        await context.Brands.AddAsync(entity);
+        await context.SaveChangesAsync();
+    }
 
-    //public async Task AddAsync(Brand entity)
-    //{
-    //    await context.Brands.AddAsync(entity);
-    //    await context.SaveChangesAsync();
-    //}
+    public async Task UpdateAsync(Brand entityToUpdate, Brand entity)
+    {
+        context.Brands.Attach(entityToUpdate);
+        context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
 
-    //public async Task UpdateAsync(Brand entityToUpdate, Brand entity)
-    //{
-    //    context.Brands.Attach(entityToUpdate);
-    //    context.Entry(entityToUpdate).CurrentValues.SetValues(entity);
+        await context.SaveChangesAsync();
+    }
 
-    //    await context.SaveChangesAsync();
-    //}
-
-    //public async Task DeleteAsync(Brand entity)
-    //{
-    //    context.Brands.Remove(entity);
-    //    await context.SaveChangesAsync();
-    //}
+    public async Task DeleteAsync(Brand entity)
+    {
+        context.Brands.Remove(entity);
+        await context.SaveChangesAsync();
+    }
 }
 
